@@ -86,6 +86,13 @@ class IndependentOp(PauliwordOp):
         """
         PwordOp = super().from_dictionary(operator_dict)
         return cls.from_PauliwordOp(PwordOp)
+    
+    @classmethod
+    def clique_generators(cls, PwordOp: PauliwordOp) -> "IndependentOp":
+        rref_matrix = _rref_binary(PwordOp.symp_matrix)
+        true_rows = np.any(rref_matrix, axis=1)
+        S_symp = rref_matrix[true_rows, :]
+        return cls(S_symp, np.ones(len(S_symp)))
 
     @classmethod
     def symmetry_generators(cls, 
